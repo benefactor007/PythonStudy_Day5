@@ -28,6 +28,8 @@ class Person(object):
 # {augment: make (something) greater by adding to it; increase.}
 # Add customization of one behavior in a subclass
 class Manager(Person):                  # Define a subclass of Person; Inherit Person attrs
+    def __init__(self,name,pay):                                # Redefine constructor
+        Person.__init__(self,name,'mgr',pay)                    # Run original with 'mgr'
     def giveRaise(self, percent, bonus = .10):                  # Redefine to customize; redefine at this level
         # self.pay = int(self.pay * (1 + percent + bonus))          # Bad: cut and pastel
         Person.giveRaise(self, percent + bonus)                     # Good: augment original; instance.method(args..)
@@ -66,8 +68,9 @@ if __name__ == '__main__':  # When run for testing only
     # pay = 100000000                  # Give a 10% raise
     # pay *= 1.10                      # or: pay = pay * 1.10, if you like to type
     # print('%.2f' % pay)              # or: pay = pay + (pay * .10), if you _really_ do!
-    xiuge = Manager('Xuping Lu', 'mgr', 50000)
-    xiuge.giveRaise(.10)               # instance.method(args..)
+    # xiuge = Manager('Xuping Lu', 'mgr', 50000)
+    xiuge = Manager('Xuping Lu', 50000)     # Job name not needed
+    xiuge.giveRaise(.10)               # instance.method(args..); Implied/set by class
     # Manager.giveRaise(xiuge, .10)      # class.method(instance,args...)
     print(xiuge.lastName())
     print(xiuge)
