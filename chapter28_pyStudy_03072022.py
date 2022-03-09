@@ -10,7 +10,26 @@
 
 # from __future__ import print_function           # Input Python3.X print method to fix parentheses issue
 
-class Person(object):
+# from classtools import AttrDisplay
+
+class AttrDisplay:
+    """
+    Provides an inheritable(inˈherədəb(ə)l) display overload method that shows instance with their class
+    names and a name=value pair for each attribute stored on the instance itself (but not attrs inherited from its
+    class). Can be mixed into any class, and will work on any instance
+    """
+    def gatherAttrs(self):
+        attrs = []
+        for key in sorted(self.__dict__):
+            attrs.append('%s=%s' % (key, getattr(self, key)))
+        return ', '.join(attrs)
+
+    def __repr__(self):
+        return '[%s: %s]' % (self.__class__.__name__, self.gatherAttrs())
+
+
+# class Person(object):
+class Person(AttrDisplay):
     def __init__(self, name, job=None, pay=0):  # Normal function args
         self.name = name
         self.job = job
@@ -20,10 +39,14 @@ class Person(object):
     # @rangetest(percent=(0,0 ,1.0))              # Use decorator to validate
     def giveRaise(self, percent):
         # self.pay = int(self.pay * (1 + percent))        # Must change here only
-        self.pay = self.pay * (1 + percent)
+        self.pay = int(self.pay * (1 + percent))
     # Add __repr__ overload method for printing object
-    def __repr__(self):                                         # Added method
-        return '[Person: %s, %.2f]' % (self.name, self.pay)     # String to print
+    """
+    The new display overload method will be inherited by instances of Person, as well as Manager; Manager gets 
+    __repr__ from Person, which now obtains it from the AttrDisplay coded in another module.
+    """
+    # def __repr__(self):                                         # Added method
+    #     return '[Person: %s, %.2f]' % (self.name, self.pay)     # String to print
 
 # {augment: make (something) greater by adding to it; increase.}
 # Add customization of one behavior in a subclass
@@ -36,7 +59,6 @@ class Manager(Person):                  # Define a subclass of Person; Inherit P
         # Call Person's version
         # Python will convert to class.method(instance,args...)
 
-
 # Add incremental self-test code
 
 # {Fetch: go for and then bring back}
@@ -45,7 +67,7 @@ class Manager(Person):                  # Define a subclass of Person; Inherit P
 # Allow this file to be imported as well as run/tested
 if __name__ == '__main__':  # When run for testing only
     jon = Person('Jiahao Wu')  # Test the class
-    dynasty = Person('Tianyuan Xu', job='Warrior', pay=50000)  # Runs __init__ automatically
+    dynasty = Person('Tianyuan Xu', job='Warrior', pay=1000000)  # Runs __init__ automatically
     print(jon.name, jon.pay)  # Fetch attached attributes
     print(dynasty.name, dynasty.pay)  # Jon's and Dynasty's attrs differ
     print('{0} {1}'.format(dynasty.name,dynasty.pay))
@@ -54,7 +76,7 @@ if __name__ == '__main__':  # When run for testing only
     # dynasty.pay *= 1.10
     # print('%.2f' % dynasty.pay)
     print(jon.lastName(), dynasty.lastName())
-    dynasty.giveRaise(.10)
+    # dynasty.giveRaise(.10)
     print(dynasty.pay)
     print('%.2f' % dynasty.pay)
     print('{0:.2f}'.format(dynasty.pay))
@@ -70,7 +92,7 @@ if __name__ == '__main__':  # When run for testing only
     # print('%.2f' % pay)              # or: pay = pay + (pay * .10), if you _really_ do!
     # xiuge = Manager('Xuping Lu', 'mgr', 50000)
     xiuge = Manager('Xuping Lu', 50000)     # Job name not needed
-    xiuge.giveRaise(.10)               # instance.method(args..); Implied/set by class
+    # xiuge.giveRaise(.10)               # instance.method(args..); Implied/set by class
     # Manager.giveRaise(xiuge, .10)      # class.method(instance,args...)
     print(xiuge.lastName())
     print(xiuge)
